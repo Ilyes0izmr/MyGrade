@@ -1,4 +1,4 @@
-package com.example.gpaCalculator;
+package com.example.gpaCalculator.view;
 
 import android.os.Bundle;
 
