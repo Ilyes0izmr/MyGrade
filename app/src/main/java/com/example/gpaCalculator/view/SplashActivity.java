@@ -27,18 +27,18 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // Load GIF into ImageView
+        // load the gif
         ImageView gifImageView = findViewById(R.id.gif_splash);
         Glide.with(this)
                 .asGif()
-                .load(R.drawable.splash_gif) // Ensure splash_gif.gif is in res/drawable
+                .load(R.drawable.splash_gif)
                 .into(gifImageView);
 
-        // Initialize ViewModel (if needed)
+        // initialize ViewModel
         SplashViewModel splashViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
 
-        // Delay navigation to MainActivity
-        new Handler(Looper.getMainLooper()).postDelayed(this::navigateToMainActivity, 2000);
+        // delay navigation to MainActivity
+        new Handler(Looper.getMainLooper()).postDelayed(this::navigateToMainActivity, 4300);
     }
 
     private void navigateToMainActivity() {
