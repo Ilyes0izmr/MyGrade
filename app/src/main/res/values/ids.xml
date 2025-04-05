@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="tvFirstName" type="id" />
+    <item name="tvLastName" type="id" />
+    <item name="tvBirthdate" type="id" />
+    <item name="tvUniversity" type="id" />
+    <item name="tvFaculty" type="id" />
+    <item name="tvGroup" type="id" />
+    <item name="tvLevels" type="id" />
+    <item name="tvClasses" type="id" />
+</resources>
