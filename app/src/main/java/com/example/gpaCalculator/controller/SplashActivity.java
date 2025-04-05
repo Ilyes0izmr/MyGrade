@@ -1,4 +1,4 @@
-package com.example.gpaCalculator.view;
+package com.example.gpaCalculator.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,8 +11,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.gpaCalculator.MainActivity;
-import com.example.gpaCalculator.viewmodel.SplashViewModel;
+import com.example.gpaCalculator.model.database.DatabaseSeeder;
 import com.example.myapplication.R;
+import com.example.gpaCalculator.controller.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -27,6 +28,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+
         // load the gif
         ImageView gifImageView = findViewById(R.id.gif_splash);
         Glide.with(this)
@@ -38,12 +40,13 @@ public class SplashActivity extends AppCompatActivity {
         SplashViewModel splashViewModel = new ViewModelProvider(this).get(SplashViewModel.class);
 
         // delay navigation to MainActivity
-        new Handler(Looper.getMainLooper()).postDelayed(this::navigateToMainActivity, 4300);
+        new Handler(Looper.getMainLooper()).postDelayed(this::navigateToLoginActivity, 4300);
+
+    }
+    private void navigateToLoginActivity() {
+        Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish(); // Closes SplashActivity so it doesn’t stay in the back stack
     }
 
-    private void navigateToMainActivity() {
-        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
 }

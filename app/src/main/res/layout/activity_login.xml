@@ -1,0 +1,138 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <ImageView
+        android:layout_width="263dp"
+        android:layout_height="182dp"
+        android:layout_gravity="center"
+        android:src="@drawable/loginsplashart" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="@string/register"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:text="@string/please_register_to_login"
+        android:textColor="@color/gray"
+        android:textSize="14sp" />
+
+    <!-- Username Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/input_background"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/icon_person" />
+
+        <EditText
+            android:id="@+id/usernameEditText"
+            android:layout_width="327dp"
+            android:layout_height="48dp"
+            android:background="@null"
+            android:hint="@string/username"
+            android:paddingStart="8dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            tools:ignore="RtlSymmetry" />
+    </LinearLayout>
+
+    <!-- Password Input -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="66dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/input_background"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="43dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/icon_lock" />
+
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@null"
+            android:hint="@string/password"
+            android:inputType="textPassword"
+            android:paddingStart="8dp"
+            android:textColor="@color/black"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- Remember Me Toggle -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <Switch
+            android:id="@+id/rememberMeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/remember_me_next_time"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+    </LinearLayout>
+
+    <!-- Login Button -->
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_background"
+        android:text="@string/sign_up"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+    <!-- Sign Up Link -->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:text="@string/already_have_an_account"
+        android:textColor="@color/gray"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/signinLink"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/sign_in"
+        android:textColor="@color/purple_500"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+</LinearLayout>
