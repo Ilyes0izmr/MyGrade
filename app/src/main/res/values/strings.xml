@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Grades+</string>
     <string name="grades">Grades+</string>
+    <string name="gpa">GPA:</string>
+    <string name="calculate_gpa">Calculate GPA</string>
+    <string name="tp_score">TP Score</string>
+    <string name="exam_score">Exam Score</string>
+    <string name="td_score">TD Score</string>
+    <string name="module_name">Module Name</string>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.example.gpaCalculator.view.splash;
+package com.example.gpaCalculator.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
-import com.example.gpaCalculator.view.MainActivity;
+import com.example.gpaCalculator.MainActivity;
 import com.example.gpaCalculator.viewmodel.SplashViewModel;
 import com.example.myapplication.R;
 

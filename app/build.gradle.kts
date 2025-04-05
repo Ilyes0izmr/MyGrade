@@ -32,7 +32,15 @@ android {
 }
 
 dependencies {
+    implementation (libs.retrofit)
+    implementation (libs.retrofit.gson.converter)
+    implementation (libs.coroutines.android)
+    implementation (libs.coroutines.core)
     implementation(libs.glide)
+    implementation(libs.okhttp) // OkHttp core
+    implementation(libs.logging.interceptor) // Logging interceptor
+
+    implementation(libs.espresso.core)
     annotationProcessor(libs.glideCompiler)
     implementation(libs.appcompat)
     implementation(libs.material)
