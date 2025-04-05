@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.logging.interceptor) // Logging interceptor
 
     implementation(libs.espresso.core)
+    implementation(libs.androidx.recyclerview)
     annotationProcessor(libs.glideCompiler)
     implementation(libs.appcompat)
     implementation(libs.material)

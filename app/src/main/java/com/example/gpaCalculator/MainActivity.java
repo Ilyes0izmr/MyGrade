@@ -1,6 +1,8 @@
 package com.example.gpaCalculator;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,39 +10,81 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.gpaCalculator.model.Module;
-import com.example.gpaCalculator.view.ModulAdapter;
+import com.example.gpaCalculator.model.ModuleFetcher;
+import com.example.gpaCalculator.controller.ModuleAdapter;
 import com.example.myapplication.R;
 
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
     private RecyclerView recyclerView;
-    private ModulAdapter adapter;
+    private ModuleAdapter moduleAdapter;
+    private TextView gpaResult;
+    private Button calculateGPAButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize RecyclerView
         recyclerView = findViewById(R.id.recyclerViewModules);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // Create a list of Module objects (static data)
-        List<Module> modules = new ArrayList<>();
-        modules.add(new Module("M1", "Mathematics", "true", "true", "false", "4.0", "3.0", "Science"));
-        modules.add(new Module("M2", "Physics", "true", "false", "true", "3.5", "2.5", "Science"));
-        modules.add(new Module("M3", "Chemistry", "true", "true", "true", "2.5", "2.0", "Science"));
+        gpaResult = findViewById(R.id.gpaResult);
+        calculateGPAButton = findViewById(R.id.calculateGPAButton);
 
-        // Initialize the adapter with the static data
-        adapter = new ModulAdapter(modules);
-        recyclerView.setAdapter(adapter);
+        fetchModules(); // Load modules from API
 
-        // Optional: Show a message if no modules are available
-        if (modules.isEmpty()) {
-            Toast.makeText(this, "No modules found.", Toast.LENGTH_SHORT).show();
+        calculateGPAButton.setOnClickListener(v -> calculateGPA());
+    }
+
+    private void fetchModules() {
+        new Thread(() -> {
+            try {
+                ModuleFetcher moduleFetcher = new ModuleFetcher();
+                List<Module> modules = moduleFetcher.fetchModules();
+
+                runOnUiThread(() -> {
+                    if (modules != null && !modules.isEmpty()) {
+                        moduleAdapter = new ModuleAdapter(modules);
+                        recyclerView.setAdapter(moduleAdapter);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Failed to load modules.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() ->
+                        Toast.makeText(MainActivity.this, "Error fetching modules", Toast.LENGTH_SHORT).show()
+                );
+            }
+        }).start();
+    }
+
+    private void calculateGPA() {
+        if (moduleAdapter == null) {
+            Toast.makeText(this, "Modules not loaded yet.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        List<Module> modules = moduleAdapter.getModules();
+        float totalScore = 0;
+        float totalCoefficient = 0;
+
+        for (Module module : modules) {
+            float moduleResult = module.getCoursNote();
+            float coefficient = module.getCoefficient();
+
+            totalScore += moduleResult * coefficient;
+            totalCoefficient += coefficient;
+        }
+
+        if (totalCoefficient > 0) {
+            float gpa = totalScore / totalCoefficient;
+            gpaResult.setText("GPA: " + String.format("%.2f", gpa));
+        } else {
+            gpaResult.setText("GPA: N/A");
         }
     }
 }

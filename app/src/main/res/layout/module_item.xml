@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/moduleName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Module Name"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/moduleCoefficient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Coefficient: "
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/tdInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="TD Score"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/tpInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="TP Score"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/examInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Exam Score"
+        android:inputType="numberDecimal" />
+
+    <TextView
+        android:id="@+id/moduleResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Result: "
+        android:textSize="16sp" />
+
+</LinearLayout>

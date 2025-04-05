@@ -3,17 +3,32 @@ package com.example.gpaCalculator.model;
 /**
  * Module class that represents one of the modules with simplified attributes.
  */
-public class Module {
+import com.google.gson.annotations.SerializedName;
 
-    // Essential attributes from the JSON file
-    private String id_module;       // Unique identifier for the module
-    private String Nom_module;      // Name of the module
-    private boolean hasCours;       // Indicates if the module has a Cours component
-    private boolean hasTD;          // Indicates if the module has a TD (Tutorial) component
-    private boolean hasTP;          // Indicates if the module has a TP (Practical) component
-    private float Coefficient;      // Coefficient of the module (used in GPA calculation)
-    private float Credit;           // Credit value of the module (used in GPA calculation)
-    private String unite;           // Unit of the module
+public class Module {
+    @SerializedName("id_module")
+    private String idModule;
+
+    @SerializedName("Nom_module")
+    private String nomModule;
+
+    @SerializedName("cours")
+    private boolean hasCours;
+
+    @SerializedName("td")
+    private boolean hasTD;
+
+    @SerializedName("tp")
+    private boolean hasTP;
+
+    @SerializedName("Coefficient")
+    private float coefficient;
+
+    @SerializedName("Credit")
+    private float credit;
+
+    @SerializedName("unite")
+    private String unite;
 
     // Note values (initialized to 0)
     private float coursNote;        // Note for Cours
@@ -26,8 +41,8 @@ public class Module {
     // Parameterized constructor
     public Module(String id_module, String Nom_module, String cours, String td, String tp,
                   String Coefficient, String Credit, String unite) {
-        this.id_module = id_module;
-        this.Nom_module = Nom_module;
+        this.idModule = id_module;
+        this.nomModule = Nom_module;
 
         // Parse boolean flags from strings
         this.hasCours = Boolean.parseBoolean(cours);
@@ -35,8 +50,8 @@ public class Module {
         this.hasTP = Boolean.parseBoolean(tp);
 
         // Parse Coefficient and Credit as floats
-        this.Coefficient = Float.parseFloat(Coefficient);
-        this.Credit = Float.parseFloat(Credit);
+        this.coefficient = Float.parseFloat(Coefficient);
+        this.credit = Float.parseFloat(Credit);
 
         this.unite = unite;
 
@@ -49,19 +64,19 @@ public class Module {
     // Getters and Setters
 
     public String getId_module() {
-        return id_module;
+        return idModule;
     }
 
     public void setId_module(String id_module) {
-        this.id_module = id_module;
+        this.idModule = id_module;
     }
 
     public String getNom_module() {
-        return Nom_module;
+        return nomModule;
     }
 
     public void setNom_module(String Nom_module) {
-        this.Nom_module = Nom_module;
+        this.nomModule = Nom_module;
     }
 
     public boolean isHasCours() {
@@ -89,19 +104,19 @@ public class Module {
     }
 
     public float getCoefficient() {
-        return Coefficient;
+        return coefficient;
     }
 
     public void setCoefficient(float Coefficient) {
-        this.Coefficient = Coefficient;
+        this.coefficient = Coefficient;
     }
 
     public float getCredit() {
-        return Credit;
+        return credit;
     }
 
     public void setCredit(float Credit) {
-        this.Credit = Credit;
+        this.credit = Credit;
     }
 
     public String getUnite() {

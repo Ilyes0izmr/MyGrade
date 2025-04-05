@@ -13,7 +13,7 @@
 
         <!-- splash Activity as the Launcher Activity -->
         <activity
-            android:name="com.example.gpaCalculator.view.SplashActivity"
+            android:name="com.example.gpaCalculator.controller.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,6 +27,10 @@
             android:exported="true">
             <!-- No intent-filter here, as it's not the launcher activity -->
         </activity>
+
+
+        <activity android:name="com.example.gpaCalculator.controller.SignUpActivity"/>
+        <activity android:name="com.example.gpaCalculator.controller.LoginActivity" />
 
     </application>
 

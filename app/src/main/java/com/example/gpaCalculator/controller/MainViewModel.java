@@ -1,4 +1,4 @@
-package com.example.gpaCalculator.viewmodel;
+package com.example.gpaCalculator.controller;
 
 import android.app.Application;
 import androidx.annotation.NonNull;

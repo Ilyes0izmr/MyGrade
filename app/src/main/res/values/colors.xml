@@ -2,4 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="purple_500">#836FFF</color>
+    <color name="green">#15F5BA</color>
+    <color name="dark_blue">#1A2E45</color>  <!-- Adjusted for modern UI feel -->
+    <!-- Gray Shades -->
+    <color name="gray">#7D8B97</color>  <!-- Used for text -->
+    <color name="light_gray">#F2F4F8</color>  <!-- Used for input fields -->
+    <color name="ripple_effect">#D9D9D9</color>   <!-- Used for input fields -->
+
+
 </resources>

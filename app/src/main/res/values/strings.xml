@@ -7,5 +7,21 @@
     <string name="exam_score">Exam Score</string>
     <string name="td_score">TD Score</string>
     <string name="module_name">Module Name</string>
+    <string name="register">Register</string>
+    <string name="please_register_to_login">Please register to login.</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="remember_me_next_time">Remember me next time</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="already_have_an_account_login" />
+    <string name="phone_number" />
+    <string name="email" />
+    <string name="edit_profile_picture" />
+    <string name="profile_picture" />
+    <string name="enter_phone_number" />
+    <string name="enter_email" />
+
 
 </resources>
