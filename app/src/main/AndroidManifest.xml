@@ -28,9 +28,11 @@
             <!-- No intent-filter here, as it's not the launcher activity -->
         </activity>
 
-
+        <activity android:name="com.example.gpaCalculator.controller.HomeActivity"/>
         <activity android:name="com.example.gpaCalculator.controller.SignUpActivity"/>
         <activity android:name="com.example.gpaCalculator.controller.LoginActivity" />
+        <activity android:name="com.example.gpaCalculator.controller.AccountActivity"/>
+
 
     </application>
 

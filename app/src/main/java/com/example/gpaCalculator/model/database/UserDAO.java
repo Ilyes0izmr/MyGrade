@@ -6,6 +6,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+
+import com.example.gpaCalculator.model.entities.Admin;
+import com.example.gpaCalculator.model.entities.Student;
+import com.example.gpaCalculator.model.entities.Teacher;
+import com.example.gpaCalculator.model.entities.User;
+
 public class UserDAO {
 
     private final DatabaseHelper dataBaseHelper;
@@ -110,5 +116,103 @@ public class UserDAO {
         return isTakenInUsers || isTakenInTeachers;
     }
 
+    public User getUserByUsername(String username) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        String[] columns = {
+                DatabaseHelper.COLUMN_USERS_ID,
+                DatabaseHelper.COLUMN_USERS_USERNAME,
+                DatabaseHelper.COLUMN_USERS_EMAIL,
+                DatabaseHelper.COLUMN_USERS_PASSWORD_HASH,
+                DatabaseHelper.COLUMN_USERS_PHONE,
+                DatabaseHelper.COLUMN_USERS_SIGNUP_DATE,
+                DatabaseHelper.COLUMN_USERS_ENROLLMENT_ID
+        };
+
+        String selection = DatabaseHelper.COLUMN_USERS_USERNAME + " = ?";
+        String[] selectionArgs = {username};
+
+        Cursor cursor = db.query(DatabaseHelper.TABLE_USERS, columns, selection, selectionArgs, null, null, null);
+
+        User user = null;
+        if (cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_ID));
+            String email = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_EMAIL));
+            String passwordHash = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_PASSWORD_HASH));
+            String phone = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_PHONE));
+            String signupDate = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_SIGNUP_DATE));
+            int enrollmentId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_ENROLLMENT_ID));
+
+            // Determine the role and create the appropriate user object
+            String role = getUserRole(enrollmentId, db);
+            switch (role) {
+                case "Student":
+                    user = new Student(id, username, email, passwordHash, phone, signupDate, enrollmentId, "", "", "", 0);
+                    break;
+                case "Teacher":
+                    user = new Teacher(id, username, email, passwordHash, phone, signupDate, enrollmentId, "", 0);
+                    break;
+                case "Admin":
+                    user = new Admin(id, username, email, passwordHash, phone, signupDate, enrollmentId, "");
+                    break;
+                default:
+                    user = new User(id, username, email, passwordHash, phone, signupDate, enrollmentId);
+            }
+        }
+        cursor.close();
+        return user;
+    }
+
+    private String getUserRole(int enrollmentId, SQLiteDatabase db) {
+        String[] columns = {
+                DatabaseHelper.COLUMN_ENROLLMENT_STUDENT_ID,
+                DatabaseHelper.COLUMN_ENROLLMENT_PROFESSOR_ID,
+                DatabaseHelper.COLUMN_ENROLLMENT_ADMIN_UNIV_ID
+        };
+
+        String selection = DatabaseHelper.COLUMN_ENROLLMENT_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(enrollmentId)};
+
+        Cursor cursor = db.query(DatabaseHelper.TABLE_ENROLLMENT, columns, selection, selectionArgs, null, null, null);
+
+        String role = "Unknown";
+        if (cursor.moveToFirst()) {
+            String studentId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_STUDENT_ID));
+            String professorId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_PROFESSOR_ID));
+            String adminUnivId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_ADMIN_UNIV_ID));
+
+            if (studentId != null) {
+                role = "Student";
+            } else if (professorId != null) {
+                role = "Teacher";
+            } else if (adminUnivId != null) {
+                role = "Admin";
+            }
+        }
+        cursor.close();
+        return role;
+    }
+
+    public String[] getEnrollmentDetails(int enrollmentId) {
+        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
+        String[] columns = {
+                DatabaseHelper.COLUMN_ENROLLMENT_FIRST_NAME,
+                DatabaseHelper.COLUMN_ENROLLMENT_LAST_NAME,
+                DatabaseHelper.COLUMN_ENROLLMENT_BIRTHDATE
+        };
+
+        String selection = DatabaseHelper.COLUMN_ENROLLMENT_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(enrollmentId)};
+
+        Cursor cursor = db.query(DatabaseHelper.TABLE_ENROLLMENT, columns, selection, selectionArgs, null, null, null);
+
+        String[] details = new String[3];
+        if (cursor.moveToFirst()) {
+            details[0] = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_FIRST_NAME));
+            details[1] = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_LAST_NAME));
+            details[2] = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_BIRTHDATE));
+        }
+        cursor.close();
+        return details;
+    }
 
 }

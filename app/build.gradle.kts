@@ -42,6 +42,7 @@ dependencies {
 
     implementation(libs.espresso.core)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.firebase.firestore)
     annotationProcessor(libs.glideCompiler)
     implementation(libs.appcompat)
     implementation(libs.material)
