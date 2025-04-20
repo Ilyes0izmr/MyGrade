@@ -2,10 +2,6 @@ package com.example.gpaCalculator.controller;
 
 import android.content.Context;
 import com.example.gpaCalculator.model.entities.User;
-import com.example.gpaCalculator.model.entities.Student;
-import com.example.gpaCalculator.model.entities.Teacher;
-import com.example.gpaCalculator.model.entities.Admin;
-
 
 public class SessionManager {
     private static SessionManager instance;
@@ -22,31 +18,49 @@ public class SessionManager {
         return instance;
     }
 
+    /**
+     * Starts a session by assigning the current user.
+     *
+     * @param user The logged-in user.
+     */
     public void startSession(User user) {
         this.currentUser = user;
     }
 
+    /**
+     * Ends the session by clearing the current user.
+     */
     public void endSession() {
         this.currentUser = null;
     }
 
+    /**
+     * Retrieves the currently logged-in user.
+     *
+     * @return The current user, or null if no user is logged in.
+     */
     public User getCurrentUser() {
         return currentUser;
     }
 
+    /**
+     * Checks if a user is currently logged in.
+     *
+     * @return True if a user is logged in, false otherwise.
+     */
     public boolean isLoggedIn() {
         return currentUser != null;
     }
 
+    /**
+     * Determines the role of the currently logged-in user.
+     *
+     * @return The role of the user (e.g., "student", "teacher", "admin"), or "Unknown" if no user is logged in.
+     */
     public String getUserRole() {
-        if (currentUser instanceof Student) {
-            return "Student";
-        } else if (currentUser instanceof Teacher) {
-            return "Teacher";
-        } else if (currentUser instanceof Admin) {
-            return "Admin";
-        } else {
-            return "Unknown";
+        if (currentUser != null) {
+            return currentUser.getRoleType(); // Use the role_type from the User object
         }
+        return "Unknown";
     }
 }

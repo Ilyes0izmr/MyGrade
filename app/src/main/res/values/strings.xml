@@ -12,9 +12,9 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="remember_me_next_time">Remember me next time</string>
-    <string name="sign_up">Sign Up</string>
+    <string name="sign_up">Log In</string>
     <string name="already_have_an_account">Already have an account?</string>
-    <string name="sign_in">Sign In</string>
+    <string name="sign_in">Register</string>
     <string name="already_have_an_account_login" />
     <string name="phone_number" />
     <string name="email" />
