@@ -1,218 +1,190 @@
 package com.example.gpaCalculator.model.database;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.gpaCalculator.model.entities.Admin;
-import com.example.gpaCalculator.model.entities.Student;
-import com.example.gpaCalculator.model.entities.Teacher;
 import com.example.gpaCalculator.model.entities.User;
 
 public class UserDAO {
+    private static final String TAG = "UserDAO";
+    private DatabaseHelper dbHelper;
 
-    private final DatabaseHelper dataBaseHelper;
-
+    // Constructor
     public UserDAO(Context context) {
-        dataBaseHelper = new DatabaseHelper(context);
+        this.dbHelper = new DatabaseHelper(context);
     }
 
-    // Validate if the user with the provided email exists in the database
-    public boolean validateUser(String input, String password) {
-        SQLiteDatabase dataBase = dataBaseHelper.getReadableDatabase();
+    /**
+     * Validates a user by checking if the username exists and the password matches.
+     *
+     * @param username The username of the user.
+     * @param password The password to validate.
+     * @return True if the username exists and the password matches, false otherwise.
+     */
+    public boolean validateUser(String username, String password) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        boolean isValid = false;
 
-        // Log the input parameters for debugging
-        Log.d("UserDAO", "Validating user with input: " + input);
-
-        try (Cursor cursor = dataBase.query(
-                DatabaseHelper.TABLE_USERS,    // The table name
-                new String[]{                  // the COLUMNS
-                        DatabaseHelper.COLUMN_USERS_ID,
-                        DatabaseHelper.COLUMN_USERS_PASSWORD_HASH
-                },
-                DatabaseHelper.COLUMN_USERS_USERNAME + "=? OR " +  //selection part
-                        DatabaseHelper.COLUMN_USERS_EMAIL + "=?",
-                new String[]{     //values to store the return of the selection
-                        input,    //for username return
-                        input     //for the email return
-                },
+        Cursor cursor = db.query(
+                DatabaseHelper.TABLE_USERS,
+                null,
+                DatabaseHelper.COLUMN_USERS_USERNAME + " = ? AND " + DatabaseHelper.COLUMN_USERS_PASSWORD_HASH + " = ?",
+                new String[]{username, password},
                 null,
                 null,
-                null)) {
+                null
+        );
 
-            // Log the number of rows returned
-            Log.d("UserDAO", "Number of rows returned: " + cursor.getCount());
-
-            boolean isValid = false;
-            if (cursor.moveToFirst()) {
-                // Log the stored password for debugging
-                @SuppressLint("Range") String storedPassword = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_USERS_PASSWORD_HASH));
-                Log.d("UserDAO", "Stored password: " + storedPassword);
-
-                if (storedPassword.equals(password)) {
-                    isValid = true;
-                }
-            }
-
-            return isValid;
-
-        } catch (Exception e) {
-            Log.e("UserDAO", "Error validating user", e);
-            return false;
+        if (cursor != null && cursor.moveToFirst()) {
+            isValid = true; // Username and password match
+            cursor.close();
         }
 
-    }
-    public boolean isUsernameOrEmailTaken(String username, String email) {
-        SQLiteDatabase database = dataBaseHelper.getReadableDatabase();
-
-        String query = "SELECT " + DatabaseHelper.COLUMN_USERS_ID +
-                " FROM " + DatabaseHelper.TABLE_USERS +
-                " WHERE " + DatabaseHelper.COLUMN_USERS_USERNAME + "=? OR " +
-                DatabaseHelper.COLUMN_USERS_EMAIL + "=?";
-
-        try (Cursor cursor = database.rawQuery(query, new String[]{username, email})) {
-            return cursor.getCount() > 0;
-        }
-    }
-    public boolean insertUser(String username, String email, String password) {
-        SQLiteDatabase database = dataBaseHelper.getWritableDatabase();
-        ContentValues values = new ContentValues();
-
-        values.put(DatabaseHelper.COLUMN_USERS_USERNAME, username);
-        values.put(DatabaseHelper.COLUMN_USERS_EMAIL, email);
-        values.put(DatabaseHelper.COLUMN_USERS_PASSWORD_HASH, password); // Not hashed for now
-        values.put(DatabaseHelper.COLUMN_USERS_PHONE, ""); // Default empty
-        values.put(DatabaseHelper.COLUMN_USERS_SIGNUP_DATE, System.currentTimeMillis()); // Store timestamp
-
-        long result = database.insert(DatabaseHelper.TABLE_USERS, null, values);
-        return result != -1; // If result == -1, insertion failed
+        db.close();
+        return isValid;
     }
 
-    public boolean isMatriculeTaken(String matricule) {
-        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
-
-        // Query the users table for student_id
-        String[] columnsUsers = {DatabaseHelper.COLUMN_USERS_ID};
-        String selectionUsers = DatabaseHelper.COLUMN_STUDENT_ID + " = ?";
-        String[] selectionArgsUsers = {matricule};
-
-        Cursor cursorUsers = db.query(DatabaseHelper.TABLE_USERS, columnsUsers, selectionUsers, selectionArgsUsers, null, null, null);
-        boolean isTakenInUsers = cursorUsers.getCount() > 0;
-        cursorUsers.close();
-
-        // Query the teachers table for professor_id
-        String[] columnsTeachers = {DatabaseHelper.COLUMN_TEACHERS_ID};
-        String selectionTeachers = DatabaseHelper.COLUMN_TEACHERS_PROFESSOR_ID + " = ?";
-        String[] selectionArgsTeachers = {matricule};
-
-        Cursor cursorTeachers = db.query(DatabaseHelper.TABLE_TEACHERS, columnsTeachers, selectionTeachers, selectionArgsTeachers, null, null, null);
-        boolean isTakenInTeachers = cursorTeachers.getCount() > 0;
-        cursorTeachers.close();
-
-        // Return true if the matricule is found in either table
-        return isTakenInUsers || isTakenInTeachers;
-    }
-
+    /**
+     * Retrieves a user by their username.
+     *
+     * @param username The username of the user to retrieve.
+     * @return A User object, or null if no user is found.
+     */
     public User getUserByUsername(String username) {
-        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
-        String[] columns = {
-                DatabaseHelper.COLUMN_USERS_ID,
-                DatabaseHelper.COLUMN_USERS_USERNAME,
-                DatabaseHelper.COLUMN_USERS_EMAIL,
-                DatabaseHelper.COLUMN_USERS_PASSWORD_HASH,
-                DatabaseHelper.COLUMN_USERS_PHONE,
-                DatabaseHelper.COLUMN_USERS_SIGNUP_DATE,
-                DatabaseHelper.COLUMN_USERS_ENROLLMENT_ID
-        };
-
-        String selection = DatabaseHelper.COLUMN_USERS_USERNAME + " = ?";
-        String[] selectionArgs = {username};
-
-        Cursor cursor = db.query(DatabaseHelper.TABLE_USERS, columns, selection, selectionArgs, null, null, null);
-
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
         User user = null;
-        if (cursor.moveToFirst()) {
-            int id = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_ID));
-            String email = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_EMAIL));
-            String passwordHash = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_PASSWORD_HASH));
-            String phone = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_PHONE));
-            String signupDate = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_SIGNUP_DATE));
-            int enrollmentId = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_ENROLLMENT_ID));
 
-            // Determine the role and create the appropriate user object
-            String role = getUserRole(enrollmentId, db);
-            switch (role) {
-                case "Student":
-                    user = new Student(id, username, email, passwordHash, phone, signupDate, enrollmentId, "", "", "", 0);
-                    break;
-                case "Teacher":
-                    user = new Teacher(id, username, email, passwordHash, phone, signupDate, enrollmentId, "", 0);
-                    break;
-                case "Admin":
-                    user = new Admin(id, username, email, passwordHash, phone, signupDate, enrollmentId, "");
-                    break;
-                default:
-                    user = new User(id, username, email, passwordHash, phone, signupDate, enrollmentId);
-            }
+        Cursor cursor = db.query(
+                DatabaseHelper.TABLE_USERS,
+                null,
+                DatabaseHelper.COLUMN_USERS_USERNAME + " = ?",
+                new String[]{username},
+                null,
+                null,
+                null
+        );
+
+        if (cursor != null && cursor.moveToFirst()) {
+            user = cursorToUser(cursor);
+            cursor.close();
         }
-        cursor.close();
+
+        db.close();
         return user;
     }
 
-    private String getUserRole(int enrollmentId, SQLiteDatabase db) {
-        String[] columns = {
-                DatabaseHelper.COLUMN_ENROLLMENT_STUDENT_ID,
-                DatabaseHelper.COLUMN_ENROLLMENT_PROFESSOR_ID,
-                DatabaseHelper.COLUMN_ENROLLMENT_ADMIN_UNIV_ID
-        };
+    /**
+     * Inserts a new user into the database.
+     *
+     * @param user The User object to insert.
+     * @return The row ID of the newly inserted user, or -1 if insertion failed.
+     */
+    public boolean insertUser(User user) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
-        String selection = DatabaseHelper.COLUMN_ENROLLMENT_ID + " = ?";
-        String[] selectionArgs = {String.valueOf(enrollmentId)};
+        // Populate the ContentValues object with user data
+        values.put(DatabaseHelper.COLUMN_USERS_ID, user.getId());
+        values.put(DatabaseHelper.COLUMN_USERS_USERNAME, user.getUsername());
+        values.put(DatabaseHelper.COLUMN_USERS_EMAIL, user.getEmail());
+        values.put(DatabaseHelper.COLUMN_USERS_PASSWORD_HASH, user.getPasswordHash());
+        values.put(DatabaseHelper.COLUMN_USERS_PHONE, user.getPhone());
+        values.put(DatabaseHelper.COLUMN_USERS_SIGNUP_DATE, user.getSignupDate());
+        values.put("role_type", user.getRoleType()); // Add role_type
 
-        Cursor cursor = db.query(DatabaseHelper.TABLE_ENROLLMENT, columns, selection, selectionArgs, null, null, null);
+        // Attempt to insert the user into the database
+        long result = db.insert(DatabaseHelper.TABLE_USERS, null, values);
 
-        String role = "Unknown";
-        if (cursor.moveToFirst()) {
-            String studentId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_STUDENT_ID));
-            String professorId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_PROFESSOR_ID));
-            String adminUnivId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_ADMIN_UNIV_ID));
+        // Close the database connection
+        db.close();
 
-            if (studentId != null) {
-                role = "Student";
-            } else if (professorId != null) {
-                role = "Teacher";
-            } else if (adminUnivId != null) {
-                role = "Admin";
-            }
+        // Return true if the insertion was successful, false otherwise
+        if (result == -1) {
+            Log.e(TAG, "Failed to insert user: " + user.getUsername());
+            return false;
+        } else {
+            Log.d(TAG, "User inserted successfully: " + user.getUsername());
+            return true;
         }
-        cursor.close();
-        return role;
     }
 
-    public String[] getEnrollmentDetails(int enrollmentId) {
-        SQLiteDatabase db = dataBaseHelper.getReadableDatabase();
-        String[] columns = {
-                DatabaseHelper.COLUMN_ENROLLMENT_FIRST_NAME,
-                DatabaseHelper.COLUMN_ENROLLMENT_LAST_NAME,
-                DatabaseHelper.COLUMN_ENROLLMENT_BIRTHDATE
-        };
+    /**
+     * Updates an existing user in the database.
+     *
+     * @param user The User object with updated information.
+     * @return The number of rows affected (should be 1 if successful).
+     */
+    public int updateUser(User user) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
 
-        String selection = DatabaseHelper.COLUMN_ENROLLMENT_ID + " = ?";
-        String[] selectionArgs = {String.valueOf(enrollmentId)};
+        values.put(DatabaseHelper.COLUMN_USERS_USERNAME, user.getUsername());
+        values.put(DatabaseHelper.COLUMN_USERS_EMAIL, user.getEmail());
+        values.put(DatabaseHelper.COLUMN_USERS_PASSWORD_HASH, user.getPasswordHash());
+        values.put(DatabaseHelper.COLUMN_USERS_PHONE, user.getPhone());
+        values.put(DatabaseHelper.COLUMN_USERS_SIGNUP_DATE, user.getSignupDate());
+        values.put("role_type", user.getRoleType()); // Update role_type
 
-        Cursor cursor = db.query(DatabaseHelper.TABLE_ENROLLMENT, columns, selection, selectionArgs, null, null, null);
+        int result = db.update(
+                DatabaseHelper.TABLE_USERS,
+                values,
+                DatabaseHelper.COLUMN_USERS_ID + " = ?",
+                new String[]{user.getId()}
+        );
 
-        String[] details = new String[3];
-        if (cursor.moveToFirst()) {
-            details[0] = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_FIRST_NAME));
-            details[1] = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_LAST_NAME));
-            details[2] = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_BIRTHDATE));
+        if (result > 0) {
+            Log.d(TAG, "User updated successfully: " + user.getUsername());
+        } else {
+            Log.e(TAG, "Failed to update user: " + user.getUsername());
         }
-        cursor.close();
-        return details;
+
+        db.close();
+        return result;
     }
 
+    /**
+     * Deletes a user from the database.
+     *
+     * @param userId The ID of the user to delete.
+     * @return The number of rows affected (should be 1 if successful).
+     */
+    public int deleteUser(String userId) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        int result = db.delete(
+                DatabaseHelper.TABLE_USERS,
+                DatabaseHelper.COLUMN_USERS_ID + " = ?",
+                new String[]{userId}
+        );
+
+        if (result > 0) {
+            Log.d(TAG, "User deleted successfully: ID = " + userId);
+        } else {
+            Log.e(TAG, "Failed to delete user: ID = " + userId);
+        }
+
+        db.close();
+        return result;
+    }
+
+    /**
+     * Converts a database cursor to a User object.
+     *
+     * @param cursor The database cursor containing user data.
+     * @return A User object.
+     */
+    private User cursorToUser(Cursor cursor) {
+        String id = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_ID));
+        String username = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_USERNAME));
+        String email = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_EMAIL));
+        String passwordHash = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_PASSWORD_HASH));
+        String phone = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_PHONE));
+        String signupDate = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_USERS_SIGNUP_DATE));
+        String roleType = cursor.getString(cursor.getColumnIndexOrThrow("role_type")); // Retrieve role_type
+
+        return new User(id, username, email, passwordHash, phone, signupDate, roleType); // Include roleType
+    }
 }

@@ -1,36 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.gpaCalculator.controller.SignUpActivity">
+    android:background="#121212"
+    android:padding="24dp"
+    >
 
     <!-- Title TextView -->
+
+    <!-- Username EditText -->
     <TextView
         android:id="@+id/textViewSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up"
-        android:textSize="24sp"
-        android:textColor="#07002D"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="40dp"
+        android:text="Create Account"
+        android:textColor="#E0E0E0"
+        android:textSize="28sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Username EditText -->
     <EditText
         android:id="@+id/editTextUsername"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Username"
-        android:inputType="text"
-        android:textColor="#07002D"
-        android:layout_marginTop="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#9E9E9E"
+        android:background="@drawable/edittext_background_dark"
         android:padding="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp"
+        android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewSignUp" />
 
     <!-- Email EditText -->
@@ -39,12 +47,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:textColor="#07002D"
-        android:layout_marginTop="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#9E9E9E"
+        android:background="@drawable/edittext_background_dark"
         android:padding="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextUsername" />
 
     <!-- Matricule EditText -->
@@ -53,12 +63,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="University ID (Matricule)"
-        android:inputType="text"
-        android:textColor="#07002D"
-        android:layout_marginTop="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#9E9E9E"
+        android:background="@drawable/edittext_background_dark"
         android:padding="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextEmail" />
 
     <!-- Password EditText -->
@@ -67,12 +79,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Password"
-        android:inputType="textPassword"
-        android:textColor="#07002D"
-        android:layout_marginTop="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#9E9E9E"
+        android:background="@drawable/edittext_background_dark"
         android:padding="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextMatricule" />
 
     <!-- Confirm Password EditText -->
@@ -81,12 +95,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Confirm Password"
-        android:inputType="textPassword"
-        android:textColor="#07002D"
-        android:layout_marginTop="16dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#9E9E9E"
+        android:background="@drawable/edittext_background_dark"
         android:padding="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"
+        android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextPassword" />
 
     <!-- Sign Up Button -->
@@ -95,13 +111,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Sign Up"
-        android:layout_marginTop="24dp"
-        android:padding="16dp"
-        android:backgroundTint="#15F5BA"
-        android:textColor="#07002D"
+        android:textColor="#E0E0E0"
+        android:backgroundTint="#424242"
         android:textAllCaps="false"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:paddingVertical="12dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/editTextConfirmPassword" />
 
     <!-- Login Link -->
@@ -111,10 +129,13 @@
         android:layout_height="wrap_content"
         android:text="Already have an account? Log in"
         android:textSize="14sp"
-        android:textColor="#15F5BA"
-        android:layout_marginTop="16dp"
+        android:textColor="#9E9E9E"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="32dp"
         android:padding="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonSignUp" />
+        app:layout_constraintTop_toBottomOf="@id/buttonSignUp"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -24,7 +24,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private Switch rememberMeSwitch;
     private TextView signinLink;
-
     private UserDAO userDAO ;
 
     @Override
@@ -37,13 +36,14 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.loginButton);
         rememberMeSwitch = findViewById(R.id.rememberMeSwitch);
         signinLink = findViewById(R.id.signinLink);
+
         userDAO = new UserDAO(this);
         DatabaseSeeder seeder = new DatabaseSeeder(this);
+
         seeder.seedDatabase(); // Seeds dummy data if database is empty
         loginButton.setOnClickListener(v -> authenticateUser());
         signinLink.setOnClickListener(v -> navigateToSignUp());
     }
-
 
     public void authenticateUser() {
         String username = usernameEditText.getText().toString().trim();
@@ -68,9 +68,11 @@ public class LoginActivity extends AppCompatActivity {
         }
 
     }
+
     private void navigateToSignUp() {
         startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
     }
+
     private void navigateToHome() {
         startActivity(new Intent(LoginActivity.this, HomeActivity.class));
         finish();

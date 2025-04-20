@@ -9,8 +9,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.gpaCalculator.model.database.EnrollmentDAO;
+import com.example.gpaCalculator.model.database.AdminDAO;
+import com.example.gpaCalculator.model.database.StudentDAO;
+import com.example.gpaCalculator.model.database.TeacherDAO;
 import com.example.gpaCalculator.model.database.UserDAO;
+import com.example.gpaCalculator.model.entities.User;
 import com.example.myapplication.R;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -23,8 +26,9 @@ public class SignUpActivity extends AppCompatActivity {
     private TextView logInLink;
 
     private UserDAO userDAO;
-    //TODO: other DAO here
-
+    private StudentDAO studentDAO;
+    private TeacherDAO teacherDAO;
+    private AdminDAO adminDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,9 @@ public class SignUpActivity extends AppCompatActivity {
         logInLink = findViewById(R.id.textViewLogin);
 
         userDAO = new UserDAO(this);
+        studentDAO = new StudentDAO(this);
+        teacherDAO = new TeacherDAO(this);
+        adminDAO = new AdminDAO(this);
 
         logInLink.setOnClickListener(v -> navigateToLogIn());
         buttonSignUp.setOnClickListener(v -> signUp());
@@ -49,7 +56,6 @@ public class SignUpActivity extends AppCompatActivity {
         startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
     }
 
-    //TODO:if yes we check if the user has an account
     public void signUp() {
         String username = editTextUsername.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
@@ -69,27 +75,38 @@ public class SignUpActivity extends AppCompatActivity {
             return;
         }
 
-        // Check if matricule is enrolled
-        EnrollmentDAO enrollmentDAO = new EnrollmentDAO(this);
-        if (!enrollmentDAO.isMatriculeEnrolled(matricule)) {
-            Toast.makeText(this, "Matricule not found in enrollment records!", Toast.LENGTH_SHORT).show();
+        // Determine role based on matricule
+        String roleType = null;
+        String userId = null;
+
+        if (studentDAO.isMatriculeExists(matricule)) {
+            roleType = "student";
+            userId = studentDAO.getUserIdByMatricule(matricule); // Get the ID from the students table
+        } else if (teacherDAO.isMatriculeExists(matricule)) {
+            roleType = "teacher";
+            userId = teacherDAO.getUserIdByMatricule(matricule); // Get the ID from the teachers table
+        } else if (adminDAO.isMatriculeExists(matricule)) {
+            roleType = "admin";
+            userId = adminDAO.getUserIdByMatricule(matricule); // Get the ID from the admins table
+        }
+
+        if (roleType == null || userId == null) {
+            Toast.makeText(this, "Matricule not found in any records!", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Check if username or email is already taken
-        if (userDAO.isUsernameOrEmailTaken(username, email)) {
+        /*if (userDAO.isUsernameOrEmailTaken(username, email)) {
             Toast.makeText(this, "Username or email is already in use!", Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
 
-        // Check if matricule is already used by anyone (students or teachers)
-        if (userDAO.isMatriculeTaken(matricule)) {
-            Toast.makeText(this, "This matricule is already associated with an account!", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // Create a User object
+        String signupDate = String.valueOf(System.currentTimeMillis()); // Use current timestamp
+        User user = new User(userId, username, email, password, null, signupDate, roleType);
 
-        // Insert the new user
-        boolean success = userDAO.insertUser(username, email, password);
+        // Insert the new user into the users table
+        boolean success = userDAO.insertUser(user);
         if (success) {
             Toast.makeText(this, "Sign-up successful!", Toast.LENGTH_SHORT).show();
             navigateToLogIn();

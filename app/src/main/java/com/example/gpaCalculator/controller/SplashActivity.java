@@ -29,7 +29,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
 
 
-        // load the gif
+        // load the gif//
         ImageView gifImageView = findViewById(R.id.gif_splash);
         Glide.with(this)
                 .asGif()

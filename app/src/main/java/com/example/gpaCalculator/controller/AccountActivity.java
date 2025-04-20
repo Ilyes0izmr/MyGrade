@@ -1,18 +1,14 @@
-// src/main/java/com/example/gpacalculator/activities/AccountActivity.java
 package com.example.gpaCalculator.controller;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.gpaCalculator.controller.HomeActivity;
-import com.example.gpaCalculator.model.database.DatabaseHelper;
+import com.example.gpaCalculator.model.database.StudentDAO;
 import com.example.gpaCalculator.model.database.TeacherDAO;
 import com.example.gpaCalculator.model.database.UserDAO;
 import com.example.gpaCalculator.model.entities.Student;
@@ -20,18 +16,22 @@ import com.example.gpaCalculator.model.entities.Teacher;
 import com.example.gpaCalculator.model.entities.User;
 import com.example.myapplication.R;
 
-import java.util.List;
-
 public class AccountActivity extends AppCompatActivity {
 
-    private DatabaseHelper dbHelper;
+    private UserDAO userDAO;
+    private StudentDAO studentDAO;
+    private TeacherDAO teacherDAO;
 
     @SuppressLint("SetTextI18n")
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
+
+        // Initialize DAOs
+        userDAO = new UserDAO(this);
+        studentDAO = new StudentDAO(this);
+        teacherDAO = new TeacherDAO(this);
 
         // Get references to TextViews
         TextView tvUsername = findViewById(R.id.tvUsername);
@@ -51,37 +51,64 @@ public class AccountActivity extends AppCompatActivity {
         if (currentUser != null) {
             tvUsername.setText("Username: " + currentUser.getUsername());
             tvEmail.setText("Email: " + currentUser.getEmail());
-            tvRole.setText("Role: " + SessionManager.getInstance().getUserRole());
+            String role = SessionManager.getInstance().getUserRole();
+            tvRole.setText("Role: " + role);
 
-            // Fetch enrollment details
-            UserDAO userDAO = new UserDAO(this);
-            String[] enrollmentDetails = userDAO.getEnrollmentDetails(currentUser.getEnrollmentId());
-            tvFirstName.setText("First Name: " + enrollmentDetails[0]);
-            tvLastName.setText("Last Name: " + enrollmentDetails[1]);
-            tvBirthdate.setText("Birthdate: " + enrollmentDetails[2]);
+            // Fetch role-specific details based on role_type
+            switch (role) {
+                case "student":
+                    Student student = studentDAO.getStudentById(currentUser.getId());
+                    if (student != null) {
+                        tvFirstName.setText("First Name: " + student.getFirstName());
+                        tvLastName.setText("Last Name: " + student.getLastName());
+                        tvBirthdate.setText("Birthdate: " + student.getBirthdate());
+                        tvUniversity.setText("University: " + student.getUniversity());
+                        tvFaculty.setText("Faculty: " + student.getFaculty());
+                        tvGroup.setText("Group: " + student.getGroupId());
 
-            // Display role-specific information
-            if (currentUser instanceof Student) {
-                Student student = (Student) currentUser;
-                tvUniversity.setText("University: " + student.getUniversity());
-                tvFaculty.setText("Faculty: " + student.getFaculty());
-                tvGroup.setText("Group: " + student.getGroupId());
-                tvUniversity.setVisibility(View.VISIBLE);
-                tvFaculty.setVisibility(View.VISIBLE);
-                tvGroup.setVisibility(View.VISIBLE);
-            } else if (currentUser instanceof Teacher) {
-                TeacherDAO teacherDAO = new TeacherDAO(this);
+                        // Show relevant fields for students
+                        tvUniversity.setVisibility(View.VISIBLE);
+                        tvFaculty.setVisibility(View.VISIBLE);
+                        tvGroup.setVisibility(View.VISIBLE);
+                        tvClasses.setVisibility(View.GONE);
+                        tvLevels.setVisibility(View.GONE);
+                    }
+                    break;
 
-                // Fetch and display classes taught
-                List<String> classesTaught = teacherDAO.getClassesTaught(currentUser.getId());
-                tvClasses.setText("Classes Taught: " + String.join(", ", classesTaught));
+                case "teacher":
+                    Teacher teacher = teacherDAO.getTeacherById(currentUser.getId());
+                    if (teacher != null) {
+                        tvFirstName.setText("First Name: " + teacher.getFirstName());
+                        tvLastName.setText("Last Name: " + teacher.getLastName());
+                        tvBirthdate.setText("Birthdate: " + teacher.getBirthdate());
 
-                // Fetch and display levels taught
-                List<String> levelsTaught = teacherDAO.getLevelsTaught(currentUser.getId());
-                tvLevels.setText("Levels Taught: " + String.join(", ", levelsTaught));
+                        // Fetch and display classes taught
+                        //String classesTaught = String.join(", ", teacherDAO.getClassesTaught(currentUser.getId()));
+                        //tvClasses.setText("Classes Taught: " + classesTaught);
 
-                tvClasses.setVisibility(View.VISIBLE);
-                tvLevels.setVisibility(View.VISIBLE);
+                        // Fetch and display levels taught
+                        //String levelsTaught = String.join(", ", teacherDAO.getLevelsTaught(currentUser.getId()));
+                        //tvLevels.setText("Levels Taught: " + levelsTaught);
+
+                        // Show relevant fields for teachers
+                        tvUniversity.setVisibility(View.GONE);
+                        tvFaculty.setVisibility(View.GONE);
+                        tvGroup.setVisibility(View.GONE);
+                        tvClasses.setVisibility(View.VISIBLE);
+                        tvLevels.setVisibility(View.VISIBLE);
+                    }
+                    break;
+
+                default:
+                    tvFirstName.setText("First Name: Unknown");
+                    tvLastName.setText("Last Name: Unknown");
+                    tvBirthdate.setText("Birthdate: Unknown");
+                    tvUniversity.setVisibility(View.GONE);
+                    tvFaculty.setVisibility(View.GONE);
+                    tvGroup.setVisibility(View.GONE);
+                    tvClasses.setVisibility(View.GONE);
+                    tvLevels.setVisibility(View.GONE);
+                    break;
             }
         } else {
             tvUsername.setText("No user logged in");
@@ -95,32 +122,5 @@ public class AccountActivity extends AppCompatActivity {
             Intent intent = new Intent(AccountActivity.this, HomeActivity.class);
             startActivity(intent);
         });
-    }
-
-    private String getUserRole(SQLiteDatabase db, int enrollmentId) {
-        Cursor cursor = db.query(
-                DatabaseHelper.TABLE_ENROLLMENT,
-                null,
-                DatabaseHelper.COLUMN_ENROLLMENT_ID + " = ?",
-                new String[]{String.valueOf(enrollmentId)},
-                null, null, null
-        );
-
-        String role = "Unknown";
-        if (cursor.moveToFirst()) {
-            String studentId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_STUDENT_ID));
-            String professorId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_PROFESSOR_ID));
-            String adminUnivId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_ENROLLMENT_ADMIN_UNIV_ID));
-
-            if (studentId != null) {
-                role = "Student";
-            } else if (professorId != null) {
-                role = "Teacher";
-            } else if (adminUnivId != null) {
-                role = "Admin";
-            }
-        }
-        cursor.close();
-        return role;
     }
 }

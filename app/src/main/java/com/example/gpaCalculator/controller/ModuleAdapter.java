@@ -17,7 +17,7 @@ import com.example.gpaCalculator.model.Module;
 import com.example.myapplication.R;
 
 import java.util.List;
-
+//
 public class ModuleAdapter extends RecyclerView.Adapter<ModuleAdapter.ModuleViewHolder> {
     private static List<Module> moduleList;
 

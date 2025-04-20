@@ -3,74 +3,112 @@ package com.example.gpaCalculator.model.database;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.example.gpaCalculator.model.entities.Teacher;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class TeacherDAO {
-    private final DatabaseHelper dbHelper;
+    private DatabaseHelper dbHelper;
 
     public TeacherDAO(Context context) {
-        dbHelper = new DatabaseHelper(context);
+        this.dbHelper = new DatabaseHelper(context);
     }
 
     /**
-     * Fetch the classes taught by a teacher (subject + group combinations).
+     * Checks if a matricule exists in the teachers table.
      *
-     * @param teacherId The ID of the teacher.
-     * @return A list of strings in the format "Subject - Group".
+     * @param matricule The matricule to check.
+     * @return True if the matricule exists, false otherwise.
      */
-    public List<String> getClassesTaught(int teacherId) {
+    public boolean isMatriculeExists(String matricule) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        List<String> classesTaught = new ArrayList<>();
+        boolean exists = false;
 
-        // Query to join teacher_subjects and teacher_groups tables
-        String query = "SELECT ts." + DatabaseHelper.COLUMN_SUBJECT_NAME + ", g." + DatabaseHelper.COLUMN_GROUP_NAME +
-                " FROM " + DatabaseHelper.TABLE_TEACHER_SUBJECTS + " ts" +
-                " INNER JOIN " + DatabaseHelper.TABLE_TEACHER_GROUPS + " tg" +
-                " ON ts." + DatabaseHelper.COLUMN_TEACHER_ID + " = tg." + DatabaseHelper.COLUMN_TEACHER_ID +
-                " INNER JOIN " + DatabaseHelper.TABLE_GROUPS + " g" +
-                " ON tg." + DatabaseHelper.COLUMN_GROUP_ID + " = g." + DatabaseHelper.COLUMN_GROUPS_ID +
-                " WHERE ts." + DatabaseHelper.COLUMN_TEACHER_ID + " = ?";
-
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(teacherId)});
+        Cursor cursor = db.query(
+                DatabaseHelper.TABLE_TEACHERS,
+                null,
+                DatabaseHelper.COLUMN_TEACHERS_PROFESSOR_ID + " = ?",
+                new String[]{matricule},
+                null,
+                null,
+                null
+        );
 
         if (cursor.moveToFirst()) {
-            do {
-                String subject = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_SUBJECT_NAME));
-                String group = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_GROUP_NAME));
-                classesTaught.add(subject + " - " + group);
-            } while (cursor.moveToNext());
+            exists = true;
+            cursor.close();
         }
-        cursor.close();
-        return classesTaught;
+
+        db.close();
+        return exists;
     }
 
-    /**
-     * Fetch the levels taught by a teacher.
-     *
-     * @param teacherId The ID of the teacher.
-     * @return A list of unique levels taught by the teacher.
-     */
-    public List<String> getLevelsTaught(int teacherId) {
+    public String getUserIdByMatricule(String matricule) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        List<String> levelsTaught = new ArrayList<>();
+        String userId = null;
 
-        // Query to fetch levels from groups linked to the teacher
-        String query = "SELECT DISTINCT g." + DatabaseHelper.COLUMN_GROUP_LEVEL +
-                " FROM " + DatabaseHelper.TABLE_TEACHER_GROUPS + " tg" +
-                " INNER JOIN " + DatabaseHelper.TABLE_GROUPS + " g" +
-                " ON tg." + DatabaseHelper.COLUMN_GROUP_ID + " = g." + DatabaseHelper.COLUMN_GROUPS_ID +
-                " WHERE tg." + DatabaseHelper.COLUMN_TEACHER_ID + " = ?";
-
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(teacherId)});
+        Cursor cursor = db.query(
+                DatabaseHelper.TABLE_TEACHERS,
+                new String[]{DatabaseHelper.COLUMN_TEACHERS_ID},
+                DatabaseHelper.COLUMN_TEACHERS_PROFESSOR_ID + " = ?",
+                new String[]{matricule},
+                null,
+                null,
+                null
+        );
 
         if (cursor.moveToFirst()) {
-            do {
-                String level = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_GROUP_LEVEL));
-                levelsTaught.add(level);
-            } while (cursor.moveToNext());
+            userId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TEACHERS_ID));
+            cursor.close();
         }
-        cursor.close();
-        return levelsTaught;
+
+        db.close();
+        return userId;
     }
+
+    public Teacher getTeacherById(String userId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(
+                DatabaseHelper.TABLE_TEACHERS,
+                null,
+                DatabaseHelper.COLUMN_TEACHERS_ID + " = ?",
+                new String[]{userId},
+                null, null, null
+        );
+
+        Teacher teacher = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            String professorId = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TEACHERS_PROFESSOR_ID));
+            String firstName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TEACHER_FIRST_NAME));
+            String lastName = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TEACHER_LAST_NAME));
+            String birthdate = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TEACHER_BIRTHDATE));
+            String gender = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TEACHER_GENDER));
+            String hoursPerWeek = String.valueOf(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COLUMN_TEACHERS_HOURS_PER_WEEK)));
+
+            // Create the Teacher object
+            teacher = new Teacher(
+                    userId, // id
+                    null, // username (not stored in teachers table)
+                    null, // email (not stored in teachers table)
+                    null, // passwordHash (not stored in teachers table)
+                    null, // phone (not stored in teachers table)
+                    null, // signupDate (not stored in teachers table)
+                    "teacher",
+                    professorId,
+                    firstName,
+                    lastName,
+                    birthdate,
+                    gender,
+                    hoursPerWeek
+            );
+
+            cursor.close();
+        }
+
+        db.close();
+        return teacher;
+    }
+
 }
