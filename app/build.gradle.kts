@@ -52,4 +52,5 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.androidx.viewpager2)
+    implementation (libs.androidx.cardview)
 }
