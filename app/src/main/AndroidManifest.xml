@@ -32,6 +32,9 @@
         <activity android:name="com.example.gpaCalculator.controller.SignUpActivity"/>
         <activity android:name="com.example.gpaCalculator.controller.LoginActivity" />
         <activity android:name="com.example.gpaCalculator.controller.AccountActivity"/>
+        <activity android:name="com.example.gpaCalculator.controller.GroupListActivity"/>
+        <activity android:name="com.example.gpaCalculator.controller.TeacherGradesActivity"/>
+        <activity android:name="com.example.gpaCalculator.controller.StudentRecordsActivity"/>
 
 
     </application>

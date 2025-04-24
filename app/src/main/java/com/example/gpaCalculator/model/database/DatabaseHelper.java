@@ -5,15 +5,14 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "MyGrades.db";
+    public static final String DATABASE_NAME = "MyGrades.db";
     private static final int DATABASE_VERSION = 1;
 
-    //USER TABLE ==========================================================================
+    // USER TABLE ==========================================================================
     public static final String TABLE_USERS = "users";
     public static final String COLUMN_USERS_ID = "id";
     public static final String COLUMN_USERS_USERNAME = "username";
@@ -54,7 +53,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // TEACHER_SUBJECTS Table =========================================================
     public static final String TABLE_TEACHER_SUBJECTS = "teacher_subjects";
+    public static final String COLUMN_SUBJECT_ID = "subject_id";
     public static final String COLUMN_TEACHER_ID = "teacher_id";
+    public static final String COLUMN_GROUP_SUBJECT_ID = "group_id";
     public static final String COLUMN_SUBJECT_NAME = "subject_name";
 
     // TEACHER_GROUPS Table
@@ -69,20 +70,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ADMINS_SIGNUP_DATE = "signup_date";
     public static final String COLUMN_ADMINS_UNIV_ID = "admin_univ_id";
 
+    // STUDENT_RECORDS Table =========================================================
+    public static final String TABLE_STUDENT_RECORDS = "student_records";
+    public static final String COLUMN_RECORD_ID = "record_id";
+    public static final String COLUMN_RECORD_STUDENT_ID = "student_id";
+    public static final String COLUMN_RECORD_TEACHER_ID = "teacher_id";
+    public static final String COLUMN_RECORD_GROUP_ID = "group_id";
+    public static final String COLUMN_RECORD_SUBJECT_ID = "subject_id";
+    public static final String COLUMN_RECORD_TD_NOTE = "td_note";
+    public static final String COLUMN_RECORD_TP_NOTE = "tp_note";
+    public static final String COLUMN_RECORD_EXAM_NOTE = "exam_note";
+
     // CREATE USERS
     private static final String CREATE_TABLE_USERS = "CREATE TABLE " + TABLE_USERS + " (" +
-            COLUMN_USERS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_USERS_ID + " TEXT PRIMARY KEY, " +
             COLUMN_USERS_USERNAME + " TEXT UNIQUE NOT NULL, " +
             COLUMN_USERS_EMAIL + " TEXT UNIQUE NOT NULL, " +
             COLUMN_USERS_PASSWORD_HASH + " TEXT NOT NULL, " +
             COLUMN_USERS_PHONE + " TEXT, " +
             COLUMN_USERS_SIGNUP_DATE + " TEXT NOT NULL, " +
-            "role_type TEXT CHECK(role_type IN ('student', 'teacher', 'admin')) NOT NULL" + // Indicates the role type
+            "role_type TEXT CHECK(role_type IN ('student', 'teacher', 'admin'))" +
             ");";
 
     // CREATE GROUPS TABLE
     private static final String CREATE_TABLE_GROUPS = "CREATE TABLE " + TABLE_GROUPS + " (" +
-            COLUMN_GROUPS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_GROUPS_ID + " TEXT PRIMARY KEY, " +
             COLUMN_GROUP_NAME + " TEXT NOT NULL, " +
             COLUMN_GROUP_LEVEL + " TEXT CHECK(" + COLUMN_GROUP_LEVEL + " IN ('L1', 'L2', 'L3', 'M1', 'M2', 'PhD')) NOT NULL, " +
             COLUMN_GROUP_SPECIALTY + " TEXT NOT NULL, " +
@@ -91,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // CREATE STUDENTS TABLE
     private static final String CREATE_TABLE_STUDENTS = "CREATE TABLE " + TABLE_STUDENTS + " (" +
-            COLUMN_STUDENTS_ID + " INTEGER PRIMARY KEY, " +
+            COLUMN_STUDENTS_ID + " TEXT PRIMARY KEY, " +
             COLUMN_STUDENT_ID + " TEXT UNIQUE NOT NULL, " +
             COLUMN_STUDENT_FIRST_NAME + " TEXT NOT NULL, " +
             COLUMN_STUDENT_LAST_NAME + " TEXT NOT NULL, " +
@@ -99,46 +111,64 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COLUMN_STUDENT_GENDER + " TEXT CHECK(" + COLUMN_STUDENT_GENDER + " IN ('Male', 'Female')) NOT NULL, " +
             COLUMN_UNIVERSITY + " TEXT NOT NULL, " +
             COLUMN_FACULTY + " TEXT NOT NULL, " +
-            COLUMN_GROUP_ID + " INTEGER NOT NULL, " +
+            COLUMN_GROUP_ID + " TEXT NOT NULL, " +
             "FOREIGN KEY(" + COLUMN_STUDENTS_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USERS_ID + ") ON DELETE CASCADE, " +
             "FOREIGN KEY(" + COLUMN_GROUP_ID + ") REFERENCES " + TABLE_GROUPS + "(" + COLUMN_GROUPS_ID + ") ON DELETE CASCADE" +
             ");";
 
     // CREATE TEACHERS TABLE
     private static final String CREATE_TABLE_TEACHERS = "CREATE TABLE " + TABLE_TEACHERS + " (" +
-            COLUMN_TEACHERS_ID + " INTEGER PRIMARY KEY, " +
+            COLUMN_TEACHERS_ID + " TEXT PRIMARY KEY, " +
             COLUMN_TEACHERS_PROFESSOR_ID + " TEXT UNIQUE NOT NULL, " +
             COLUMN_TEACHER_FIRST_NAME + " TEXT NOT NULL, " +
             COLUMN_TEACHER_LAST_NAME + " TEXT NOT NULL, " +
             COLUMN_TEACHER_BIRTHDATE + " TEXT NOT NULL, " +
             COLUMN_TEACHER_GENDER + " TEXT CHECK(" + COLUMN_TEACHER_GENDER + " IN ('Male', 'Female')) NOT NULL, " +
-            COLUMN_TEACHERS_HOURS_PER_WEEK + " INTEGER NOT NULL, " +
+            COLUMN_TEACHERS_HOURS_PER_WEEK + " TEXT NOT NULL, " +
             "FOREIGN KEY(" + COLUMN_TEACHERS_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USERS_ID + ") ON DELETE CASCADE" +
             ");";
 
     // CREATE TEACHER_SUBJECTS TABLE
     private static final String CREATE_TABLE_TEACHER_SUBJECTS = "CREATE TABLE " + TABLE_TEACHER_SUBJECTS + " (" +
-            COLUMN_TEACHER_ID + " INTEGER NOT NULL, " +
+            COLUMN_SUBJECT_ID + " TEXT PRIMARY KEY, " +
+            COLUMN_TEACHER_ID + " TEXT NOT NULL, " +
+            COLUMN_GROUP_SUBJECT_ID + " TEXT NOT NULL, " +
             COLUMN_SUBJECT_NAME + " TEXT NOT NULL, " +
-            "PRIMARY KEY (" + COLUMN_TEACHER_ID + ", " + COLUMN_SUBJECT_NAME + "), " +
-            "FOREIGN KEY(" + COLUMN_TEACHER_ID + ") REFERENCES " + TABLE_TEACHERS + "(" + COLUMN_TEACHERS_ID + ") ON DELETE CASCADE" +
+            "FOREIGN KEY(" + COLUMN_TEACHER_ID + ") REFERENCES " + TABLE_TEACHERS + "(" + COLUMN_TEACHERS_ID + ") ON DELETE CASCADE, " +
+            "FOREIGN KEY(" + COLUMN_GROUP_SUBJECT_ID + ") REFERENCES " + TABLE_GROUPS + "(" + COLUMN_GROUPS_ID + ") ON DELETE CASCADE" +
             ");";
 
     // CREATE TEACHER_GROUPS TABLE
     private static final String CREATE_TABLE_TEACHER_GROUPS = "CREATE TABLE " + TABLE_TEACHER_GROUPS + " (" +
-            COLUMN_TEACHER_ID + " INTEGER NOT NULL, " +
-            COLUMN_GROUP_ID + " INTEGER NOT NULL, " +
+            COLUMN_TEACHER_ID + " TEXT NOT NULL, " +
+            COLUMN_GROUP_ID + " TEXT NOT NULL, " +
             "PRIMARY KEY (" + COLUMN_TEACHER_ID + ", " + COLUMN_GROUP_ID + "), " +
             "FOREIGN KEY(" + COLUMN_TEACHER_ID + ") REFERENCES " + TABLE_TEACHERS + "(" + COLUMN_TEACHERS_ID + ") ON DELETE CASCADE, " +
             "FOREIGN KEY(" + COLUMN_GROUP_ID + ") REFERENCES " + TABLE_GROUPS + "(" + COLUMN_GROUPS_ID + ") ON DELETE CASCADE" +
             ");";
 
     private static final String CREATE_TABLE_ADMINS = "CREATE TABLE " + TABLE_ADMINS + " (" +
-            COLUMN_ADMINS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COLUMN_ADMINS_ID + " TEXT PRIMARY KEY, " +
             COLUMN_ADMINS_EMAIL + " TEXT UNIQUE NOT NULL, " +
             COLUMN_ADMINS_PASSWORD_HASH + " TEXT NOT NULL, " +
             COLUMN_ADMINS_PHONE + " TEXT, " +
             COLUMN_ADMINS_SIGNUP_DATE + " TEXT NOT NULL" +
+            ");";
+
+    // CREATE STUDENT_RECORDS TABLE
+    private static final String CREATE_TABLE_STUDENT_RECORDS = "CREATE TABLE " + TABLE_STUDENT_RECORDS + " (" +
+            COLUMN_RECORD_ID + " TEXT PRIMARY KEY, " +
+            COLUMN_RECORD_STUDENT_ID + " TEXT NOT NULL, " +
+            COLUMN_RECORD_TEACHER_ID + " TEXT NOT NULL, " +
+            COLUMN_RECORD_GROUP_ID + " TEXT NOT NULL, " +
+            COLUMN_RECORD_SUBJECT_ID + " TEXT NOT NULL, " +
+            COLUMN_RECORD_TD_NOTE + " REAL DEFAULT 0, " +
+            COLUMN_RECORD_TP_NOTE + " REAL DEFAULT 0, " +
+            COLUMN_RECORD_EXAM_NOTE + " REAL DEFAULT 0, " +
+            "FOREIGN KEY(" + COLUMN_RECORD_STUDENT_ID + ") REFERENCES " + TABLE_STUDENTS + "(" + COLUMN_STUDENTS_ID + ") ON DELETE CASCADE, " +
+            "FOREIGN KEY(" + COLUMN_RECORD_TEACHER_ID + ") REFERENCES " + TABLE_TEACHERS + "(" + COLUMN_TEACHERS_ID + ") ON DELETE CASCADE, " +
+            "FOREIGN KEY(" + COLUMN_RECORD_GROUP_ID + ") REFERENCES " + TABLE_GROUPS + "(" + COLUMN_GROUPS_ID + ") ON DELETE CASCADE, " +
+            "FOREIGN KEY(" + COLUMN_RECORD_SUBJECT_ID + ") REFERENCES " + TABLE_TEACHER_SUBJECTS + "(" + COLUMN_SUBJECT_ID + ") ON DELETE CASCADE" +
             ");";
 
     public DatabaseHelper(@Nullable Context context) {
@@ -155,6 +185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(CREATE_TABLE_TEACHER_SUBJECTS);
             db.execSQL(CREATE_TABLE_ADMINS);
             db.execSQL(CREATE_TABLE_TEACHER_GROUPS);
+            db.execSQL(CREATE_TABLE_STUDENT_RECORDS);
             Log.d("DBHelper", "All tables created successfully");
         } catch (SQLException e) {
             Log.e("DBHelper", "Error creating tables: " + e.getMessage());
@@ -165,6 +196,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d("DBHelper", "Upgrading database from version " + oldVersion + " to " + newVersion);
         try {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_STUDENT_RECORDS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_TEACHER_GROUPS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_TEACHER_SUBJECTS);
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_TEACHERS);

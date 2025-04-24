@@ -1,4 +1,3 @@
-// src/main/java/com/example/gpacalculator/activities/HomeActivity.java
 package com.example.gpaCalculator.controller;
 
 import android.content.Intent;
@@ -15,18 +14,43 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        //
 
-        // Find the button in the layout
+        // Find buttons in the layout
         Button btnGoToAccount = findViewById(R.id.btnGoToAccount);
+        Button btnViewGroupsSubjects = findViewById(R.id.btnViewGroupsSubjects);
+        Button btnManageGrades = findViewById(R.id.btnManageGrades);
+        Button btnViewRecords = findViewById(R.id.btnViewRecords);
 
-        // Set an OnClickListener to navigate to AccountActivity
-        btnGoToAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, AccountActivity.class);
-                startActivity(intent);
-            }
+        // Get the current user's role from SessionManager
+        String userRole = SessionManager.getInstance().getUserRole();
+
+        if ("teacher".equals(userRole)) {
+            // Teacher view
+            btnViewGroupsSubjects.setVisibility(View.VISIBLE);
+            btnManageGrades.setVisibility(View.VISIBLE);
+            btnViewRecords.setVisibility(View.GONE);
+
+            btnViewGroupsSubjects.setOnClickListener(v -> {
+                startActivity(new Intent(HomeActivity.this, GroupListActivity.class));
+            });
+
+            btnManageGrades.setOnClickListener(v -> {
+                startActivity(new Intent(HomeActivity.this, TeacherGradesActivity.class));
+            });
+        } else {
+            // Student view
+            btnViewGroupsSubjects.setVisibility(View.GONE);
+            btnManageGrades.setVisibility(View.GONE);
+            btnViewRecords.setVisibility(View.VISIBLE);
+
+            btnViewRecords.setOnClickListener(v -> {
+                startActivity(new Intent(HomeActivity.this, StudentRecordsActivity.class));
+            });
+        }
+
+        // Set OnClickListener for the "View Account" button (for all users)
+        btnGoToAccount.setOnClickListener(v -> {
+            startActivity(new Intent(HomeActivity.this, AccountActivity.class));
         });
     }
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Dropdown to Select Student -->
+    <Spinner
+        android:id="@+id/studentSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Subject Name Label -->
+    <TextView
+        android:id="@+id/subjectNameLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Subject: N/A"
+        android:textSize="18sp"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Input Fields for Grades -->
+    <EditText
+        android:id="@+id/tpGradeInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Enter TP Grade"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/tdGradeInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Enter TD Grade"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/examGradeInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="Enter Exam Grade"
+        android:inputType="numberDecimal"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/submitGradesButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Submit Grades"/>
+</LinearLayout>

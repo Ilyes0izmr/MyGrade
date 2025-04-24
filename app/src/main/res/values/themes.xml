@@ -1,8 +1,26 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:forceDarkAllowed">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+
+        <item name="colorPrimary">@color/accent_neon_1</item>
+        <item name="colorPrimaryVariant">@color/accent_neon_2</item>
+        <item name="colorOnPrimary">@color/text_primary_dark</item>
+        <item name="colorSecondary">@color/accent_neon_2</item>
+        <item name="colorSecondaryVariant">@color/accent_neon_1</item>
+        <item name="colorOnSecondary">@color/text_primary_dark</item>
+        <item name="android:colorBackground">@color/background_dark</item>
+        <item name="colorOnBackground">@color/text_primary_dark</item>
+        <item name="colorSurface">@color/background_dark</item>
+        <item name="colorOnSurface">@color/text_primary_dark</item>
+        <item name="colorButtonNormal">@color/accent_neon_1</item>
+        <item name="android:buttonTint">@color/accent_neon_1</item>
+        <item name="android:textColorPrimary">@color/text_primary_dark</item>
+        <item name="android:textColorSecondary">@color/text_secondary_dark</item>
+        <item name="colorControlNormal">@color/text_secondary_dark</item>
+        <item name="colorControlActivated">@color/accent_neon_1</item>
+        <item name="colorControlHighlight">@color/ripple_effect_dark</item>
     </style>
 
     <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />

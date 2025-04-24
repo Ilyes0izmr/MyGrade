@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
+    <color name="background_dark">#2b2d42</color>
+    <color name="text_primary_dark">#edf2f4</color>
+    <color name="text_secondary_dark">#8d99ae</color>
+    <color name="accent_neon_1">#ef233c</color>
+    <color name="accent_neon_2">#d90429</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="purple_500">#836FFF</color>
-    <color name="green">#15F5BA</color>
-    <color name="dark_blue">#1A2E45</color>  <!-- Adjusted for modern UI feel -->
-    <!-- Gray Shades -->
-    <color name="gray">#7D8B97</color>  <!-- Used for text -->
-    <color name="light_gray">#F2F4F8</color>  <!-- Used for input fields -->
-    <color name="ripple_effect">#D9D9D9</color>   <!-- Used for input fields -->
-
-
+    <color name="black">#FF000000</color>
+    <color name="ripple_effect_dark">#4d4f5d</color>
 </resources>

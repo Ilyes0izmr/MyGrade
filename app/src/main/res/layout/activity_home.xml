@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp">
-    <!-- res/layout/activity_home.xml -->
+
     <!-- Welcome Message -->
     <TextView
         android:id="@+id/welcomeMessage"
@@ -17,12 +17,43 @@
         android:gravity="center"
         android:paddingBottom="24dp" />
 
-    <!-- Button to Navigate to Account Page -->
+    <!-- Button to Navigate to Account Page (for all users) -->
     <Button
         android:id="@+id/btnGoToAccount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="View Account"
         android:padding="12dp"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Button for Teachers to View Groups & Subjects -->
+    <Button
+        android:id="@+id/btnViewGroupsSubjects"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View Groups and Subjects"
+        android:padding="12dp"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <!-- Button for Teachers to Manage Grades -->
+    <Button
+        android:id="@+id/btnManageGrades"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Manage Grades"
+        android:padding="12dp"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <!-- Button for Students to View Records -->
+    <Button
+        android:id="@+id/btnViewRecords"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View My Records"
+        android:padding="12dp"
+        android:textSize="18sp"
+        android:visibility="gone" />
 </LinearLayout>
