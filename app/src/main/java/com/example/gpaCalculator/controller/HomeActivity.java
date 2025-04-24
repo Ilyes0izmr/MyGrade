@@ -1,11 +1,12 @@
-// src/main/java/com/example/gpacalculator/activities/HomeActivity.java
 package com.example.gpaCalculator.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.GridLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.example.myapplication.R;
 
@@ -15,18 +16,55 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        //
 
-        // Find the button in the layout
-        Button btnGoToAccount = findViewById(R.id.btnGoToAccount);
+        // Get GridLayout container
+        GridLayout grid = findViewById(R.id.gridContainer);
 
-        // Set an OnClickListener to navigate to AccountActivity
-        btnGoToAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, AccountActivity.class);
-                startActivity(intent);
-            }
+        // Get all cards from layout
+        CardView cardAccount = findViewById(R.id.cardAccount);
+        CardView cardGroups = findViewById(R.id.cardGroups);
+        CardView cardGrades = findViewById(R.id.cardGrades);
+        CardView cardRecords = findViewById(R.id.cardRecords);
+        CardView cardAnnouncement= findViewById(R.id.cardAnnouncement);
+
+        // Clear everything first
+        grid.removeAllViews();
+
+        // Add account (common for all users)
+        cardAnnouncement.setVisibility(View.VISIBLE);
+        grid.addView(cardAnnouncement);
+        cardAnnouncement.setOnClickListener(v -> {
+            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
         });
+
+        cardAccount.setVisibility(View.VISIBLE);
+        grid.addView(cardAccount);
+        cardAccount.setOnClickListener(v -> {
+            startActivity(new Intent(HomeActivity.this, AccountActivity.class));
+        });
+
+        String userRole = SessionManager.getInstance().getUserRole();
+
+        if ("teacher".equals(userRole)) {
+            cardGroups.setVisibility(View.VISIBLE);
+            grid.addView(cardGroups);
+            cardGroups.setOnClickListener(v -> {
+                startActivity(new Intent(HomeActivity.this, GroupListActivity.class));
+            });
+
+            cardGrades.setVisibility(View.VISIBLE);
+            grid.addView(cardGrades);
+            cardGrades.setOnClickListener(v -> {
+                startActivity(new Intent(HomeActivity.this, TeacherGradesActivity.class));
+            });
+
+        } else {
+            cardRecords.setVisibility(View.VISIBLE);
+            grid.addView(cardRecords);
+            cardRecords.setOnClickListener(v -> {
+                startActivity(new Intent(HomeActivity.this, StudentRecordsActivity.class));
+            });
+        }
     }
+
 }

@@ -39,17 +39,18 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.okhttp) // OkHttp core
     implementation(libs.logging.interceptor) // Logging interceptor
-
+    implementation(libs.material)
     implementation(libs.espresso.core)
     implementation(libs.androidx.recyclerview)
     implementation(libs.firebase.firestore)
     annotationProcessor(libs.glideCompiler)
     implementation(libs.appcompat)
-    implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.androidx.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation(libs.androidx.viewpager2)
+    implementation (libs.androidx.cardview)
 }

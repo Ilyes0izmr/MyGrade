@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -33,26 +34,50 @@ public class AccountActivity extends AppCompatActivity {
         studentDAO = new StudentDAO(this);
         teacherDAO = new TeacherDAO(this);
 
-        // Get references to TextViews
-        TextView tvUsername = findViewById(R.id.tvUsername);
+        // Get references to TextViews and Layouts
+        TextView tvProfilePicture = findViewById(R.id.tvProfilePicture);
+        TextView tvUsername = findViewById(R.id.tvUsernameHeader);
+        TextView tvUsernameHeader = findViewById(R.id.tvUsernameHeader);
         TextView tvEmail = findViewById(R.id.tvEmail);
-        TextView tvRole = findViewById(R.id.tvRole);
+        TextView tvRole = findViewById(R.id.tvRoleHeader);
+        TextView tvRoleHeader = findViewById(R.id.tvRoleHeader);
         TextView tvFirstName = findViewById(R.id.tvFirstName);
         TextView tvLastName = findViewById(R.id.tvLastName);
         TextView tvBirthdate = findViewById(R.id.tvBirthdate);
+        LinearLayout layoutUniversity = findViewById(R.id.layoutUniversity);
         TextView tvUniversity = findViewById(R.id.tvUniversity);
+        LinearLayout layoutFaculty = findViewById(R.id.layoutFaculty);
         TextView tvFaculty = findViewById(R.id.tvFaculty);
+        LinearLayout layoutGroup = findViewById(R.id.layoutGroup);
         TextView tvGroup = findViewById(R.id.tvGroup);
-        TextView tvClasses = findViewById(R.id.tvClasses);
-        TextView tvLevels = findViewById(R.id.tvLevels);
 
         // Retrieve the current user from the SessionManager
         User currentUser = SessionManager.getInstance().getCurrentUser();
         if (currentUser != null) {
-            tvUsername.setText("Username: " + currentUser.getUsername());
-            tvEmail.setText("Email: " + currentUser.getEmail());
+            String email = currentUser.getEmail();
+            tvUsername.setText("Email: " + email); // Changed to Email in the list
+            tvUsernameHeader.setText(currentUser.getUsername());
+            tvEmail.setText("Email: " + email);
             String role = SessionManager.getInstance().getUserRole();
             tvRole.setText("Role: " + role);
+            tvRoleHeader.setText(role);
+
+            // Set profile picture
+            if (email != null && !email.isEmpty()) {
+                String initials = "";
+                String[] parts = email.split("@");
+                if (parts.length > 0) {
+                    String usernamePart = parts[0];
+                    if (!usernamePart.isEmpty()) {
+                        if (usernamePart.length() >= 2) {
+                            initials = usernamePart.substring(0, 2).toUpperCase();
+                        } else {
+                            initials = usernamePart.substring(0, 1).toUpperCase();
+                        }
+                    }
+                }
+                tvProfilePicture.setText(initials);
+            }
 
             // Fetch role-specific details based on role_type
             switch (role) {
@@ -67,11 +92,9 @@ public class AccountActivity extends AppCompatActivity {
                         tvGroup.setText("Group: " + student.getGroupId());
 
                         // Show relevant fields for students
-                        tvUniversity.setVisibility(View.VISIBLE);
-                        tvFaculty.setVisibility(View.VISIBLE);
-                        tvGroup.setVisibility(View.VISIBLE);
-                        tvClasses.setVisibility(View.GONE);
-                        tvLevels.setVisibility(View.GONE);
+                        layoutUniversity.setVisibility(View.VISIBLE);
+                        layoutFaculty.setVisibility(View.VISIBLE);
+                        layoutGroup.setVisibility(View.VISIBLE);
                     }
                     break;
 
@@ -81,21 +104,9 @@ public class AccountActivity extends AppCompatActivity {
                         tvFirstName.setText("First Name: " + teacher.getFirstName());
                         tvLastName.setText("Last Name: " + teacher.getLastName());
                         tvBirthdate.setText("Birthdate: " + teacher.getBirthdate());
-
-                        // Fetch and display classes taught
-                        //String classesTaught = String.join(", ", teacherDAO.getClassesTaught(currentUser.getId()));
-                        //tvClasses.setText("Classes Taught: " + classesTaught);
-
-                        // Fetch and display levels taught
-                        //String levelsTaught = String.join(", ", teacherDAO.getLevelsTaught(currentUser.getId()));
-                        //tvLevels.setText("Levels Taught: " + levelsTaught);
-
-                        // Show relevant fields for teachers
-                        tvUniversity.setVisibility(View.GONE);
-                        tvFaculty.setVisibility(View.GONE);
-                        tvGroup.setVisibility(View.GONE);
-                        tvClasses.setVisibility(View.VISIBLE);
-                        tvLevels.setVisibility(View.VISIBLE);
+                        layoutUniversity.setVisibility(View.GONE);
+                        layoutFaculty.setVisibility(View.GONE);
+                        layoutGroup.setVisibility(View.GONE);
                     }
                     break;
 
@@ -103,17 +114,18 @@ public class AccountActivity extends AppCompatActivity {
                     tvFirstName.setText("First Name: Unknown");
                     tvLastName.setText("Last Name: Unknown");
                     tvBirthdate.setText("Birthdate: Unknown");
-                    tvUniversity.setVisibility(View.GONE);
-                    tvFaculty.setVisibility(View.GONE);
-                    tvGroup.setVisibility(View.GONE);
-                    tvClasses.setVisibility(View.GONE);
-                    tvLevels.setVisibility(View.GONE);
+                    layoutUniversity.setVisibility(View.GONE);
+                    layoutFaculty.setVisibility(View.GONE);
+                    layoutGroup.setVisibility(View.GONE);
                     break;
             }
         } else {
             tvUsername.setText("No user logged in");
             tvEmail.setText("");
             tvRole.setText("");
+            tvUsernameHeader.setText("");
+            tvRoleHeader.setText("");
+            tvProfilePicture.setText("");
         }
 
         // Back to Home Button

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.gpaCalculator.model.entities.GroupSubject;
 import com.example.gpaCalculator.model.entities.Teacher;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ public class TeacherDAO {
     private DatabaseHelper dbHelper;
 
     public TeacherDAO(Context context) {
-        this.dbHelper = new DatabaseHelper(context);
+        this.dbHelper = new DatabaseHelper(context); // Initialize DatabaseHelper with Context
     }
 
     /**
@@ -109,6 +110,32 @@ public class TeacherDAO {
 
         db.close();
         return teacher;
+    }
+
+    public List<GroupSubject> getTeacherGroupsAndSubjects(String teacherId) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        List<GroupSubject> groupSubjects = new ArrayList<>();
+
+        Cursor cursor = db.rawQuery(
+                "SELECT g.name AS group_name, ts.subject_name " +
+                        "FROM teacher_groups tg " +
+                        "JOIN groups g ON tg.group_id = g.id " +
+                        "JOIN teacher_subjects ts ON tg.teacher_id = ts.teacher_id " +
+                        "WHERE tg.teacher_id = ?",
+                new String[]{teacherId}
+        );
+
+        if (cursor.moveToFirst()) {
+            do {
+                String groupName = cursor.getString(cursor.getColumnIndexOrThrow("group_name"));
+                String subjectName = cursor.getString(cursor.getColumnIndexOrThrow("subject_name"));
+                groupSubjects.add(new GroupSubject(groupName, subjectName));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        db.close();
+        return groupSubjects;
     }
 
 }

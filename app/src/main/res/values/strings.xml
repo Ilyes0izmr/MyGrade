@@ -1,27 +1,30 @@
 <resources>
-    <string name="app_name">Grades+</string>
-    <string name="grades">Grades+</string>
+    <string name="app_name">MyGrades</string>
+    <string name="grades">MyGrades</string>
     <string name="gpa">GPA:</string>
     <string name="calculate_gpa">Calculate GPA</string>
     <string name="tp_score">TP Score</string>
     <string name="exam_score">Exam Score</string>
     <string name="td_score">TD Score</string>
     <string name="module_name">Module Name</string>
-    <string name="register">Register</string>
-    <string name="please_register_to_login">Please register to login.</string>
+
+    <!-- log in page -->
+    <string name="register_title">Log In</string>
+    <string name="please_register_to_login">Please Sign in to continue !</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
-    <string name="remember_me_next_time">Remember me next time</string>
-    <string name="sign_up">Log In</string>
+    <string name="remember_me_next_time">Remember me    </string>
+    <string name="sign_up_button">Log In</string>
     <string name="already_have_an_account">Already have an account?</string>
     <string name="sign_in">Register</string>
-    <string name="already_have_an_account_login" />
-    <string name="phone_number" />
-    <string name="email" />
-    <string name="edit_profile_picture" />
-    <string name="profile_picture" />
-    <string name="enter_phone_number" />
-    <string name="enter_email" />
 
+    <!-- sign up page -->
+    <string name="confirm_password">Confirm Password</string>
+    <string name="create_account_title">Create Account</string>
+    <string name="set_up_your_passwords_message">Set up your passwords</string>
+    <string name="create_account_button">Sign Up</string>
+    <string name="fill_the_personal_informations">Fill the personal informations</string>
+    <string name="email">Email</string>
+    <string name="university_id_matricule">University ID (Matricule)</string>
 
 </resources>

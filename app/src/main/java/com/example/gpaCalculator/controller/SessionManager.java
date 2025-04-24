@@ -1,6 +1,5 @@
 package com.example.gpaCalculator.controller;
 
-import android.content.Context;
 import com.example.gpaCalculator.model.entities.User;
 
 public class SessionManager {
@@ -62,5 +61,17 @@ public class SessionManager {
             return currentUser.getRoleType(); // Use the role_type from the User object
         }
         return "Unknown";
+    }
+
+    /**
+     * Retrieves the ID of the currently logged-in user.
+     *
+     * @return The user ID, or -1 if no user is logged in.
+     */
+    public String getUserId() {
+        if (currentUser != null) {
+            return currentUser.getId();
+        }
+        return null;
     }
 }
