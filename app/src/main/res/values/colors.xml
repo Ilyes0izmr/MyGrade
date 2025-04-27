@@ -8,4 +8,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="black">#FF000000</color>
     <color name="ripple_effect_dark">#4d4f5d</color>
+    <color name="ripple_effect_light">#C8C9F1</color>
+    <color name="background_dark_2">#3a3b59</color>
 </resources>

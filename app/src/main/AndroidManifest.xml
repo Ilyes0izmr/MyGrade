@@ -35,6 +35,7 @@
         <activity android:name="com.example.gpaCalculator.controller.GroupListActivity"/>
         <activity android:name="com.example.gpaCalculator.controller.TeacherGradesActivity"/>
         <activity android:name="com.example.gpaCalculator.controller.StudentRecordsActivity"/>
+        <activity android:name="com.example.gpaCalculator.controller.AnnouncementActivity"/>
 
 
     </application>

@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
         cardAnnouncement.setVisibility(View.VISIBLE);
         grid.addView(cardAnnouncement);
         cardAnnouncement.setOnClickListener(v -> {
-            startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+            startActivity(new Intent(HomeActivity.this, AnnouncementActivity.class));
         });
 
         cardAccount.setVisibility(View.VISIBLE);

@@ -38,6 +38,7 @@ public class TeacherGradesActivity extends AppCompatActivity {
     // Properly declared maps
     private final Map<Long, String> studentSubjectMap = new HashMap<>();
     private final Map<Long, String> studentSubjectNameMap = new HashMap<>();
+    private final Map<Long, String> studentGroupMap = new HashMap<>();
     private final List<String> studentDisplayList = new ArrayList<>();
     private final List<Long> studentIdList = new ArrayList<>();
 
@@ -78,6 +79,7 @@ public class TeacherGradesActivity extends AppCompatActivity {
     private void loadStudentsWithCorrectSubjects(String teacherId) {
         studentSubjectMap.clear();
         studentSubjectNameMap.clear();
+        studentGroupMap.clear();
         studentDisplayList.clear();
         studentIdList.clear();
 
@@ -86,7 +88,8 @@ public class TeacherGradesActivity extends AppCompatActivity {
                         "  s." + DatabaseHelper.COLUMN_STUDENTS_ID      + ", " +  // student PK
                         "  u." + DatabaseHelper.COLUMN_USERS_USERNAME   + ", " +  // student username
                         "  ts." + DatabaseHelper.COLUMN_SUBJECT_ID      + ", " +  // subject PK
-                        "  ts." + DatabaseHelper.COLUMN_SUBJECT_NAME       +    // subject name
+                        "  ts." + DatabaseHelper.COLUMN_SUBJECT_NAME   + ", " +  // subject name
+                        "  g." + DatabaseHelper.COLUMN_GROUP_NAME      +    // group name
                         " FROM " + DatabaseHelper.TABLE_TEACHER_GROUPS   + " tg" +
                         " JOIN " + DatabaseHelper.TABLE_GROUPS          + " g  ON tg." + DatabaseHelper.COLUMN_GROUP_ID           + " = g." + DatabaseHelper.COLUMN_GROUPS_ID +
                         " JOIN " + DatabaseHelper.TABLE_STUDENTS        + " s  ON s." + DatabaseHelper.COLUMN_GROUP_ID           + " = g." + DatabaseHelper.COLUMN_GROUPS_ID +
@@ -95,17 +98,19 @@ public class TeacherGradesActivity extends AppCompatActivity {
                         "    AND ts." + DatabaseHelper.COLUMN_GROUP_SUBJECT_ID + " = tg." + DatabaseHelper.COLUMN_GROUP_ID +
                         " WHERE tg." + DatabaseHelper.COLUMN_TEACHER_ID   + " = ?";
 
-        Cursor cursor = db.rawQuery(query, new String[]{ teacherId });
+        Cursor cursor = db.rawQuery(query, new String[]{teacherId});
         while (cursor.moveToNext()) {
-            long   studentId    = cursor.getLong(0);
-            String studentName  = cursor.getString(1);
-            String subjectId    = cursor.getString(2);
-            String subjectName  = cursor.getString(3);
+            long studentId = cursor.getLong(0);
+            String studentName = cursor.getString(1);
+            String subjectId = cursor.getString(2);
+            String subjectName = cursor.getString(3);
+            String groupName = cursor.getString(4);
 
-            studentSubjectMap     .put(studentId, subjectId);
-            studentSubjectNameMap .put(studentId, subjectName);
-            studentDisplayList    .add(studentName + " (" + subjectName + ")");
-            studentIdList         .add(studentId);
+            studentSubjectMap.put(studentId, subjectId);
+            studentSubjectNameMap.put(studentId, subjectName);
+            studentGroupMap.put(studentId, groupName);
+            studentDisplayList.add(studentName + " (" + groupName + ")");
+            studentIdList.add(studentId);
         }
         cursor.close();
 
@@ -119,12 +124,16 @@ public class TeacherGradesActivity extends AppCompatActivity {
         studentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                selectedStudentId   = studentIdList.get(pos);
-                selectedSubjectId   = studentSubjectMap.get(selectedStudentId);
+                selectedStudentId = studentIdList.get(pos);
+                selectedSubjectId = studentSubjectMap.get(selectedStudentId);
                 selectedSubjectName = studentSubjectNameMap.get(selectedStudentId);
                 subjectNameLabel.setText("Grading for: " + selectedSubjectName);
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) { /* no-op */ }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                /* no-op */
+            }
         });
     }
 
