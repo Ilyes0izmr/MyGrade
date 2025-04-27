@@ -17,10 +17,12 @@
             android:text="Your Grades"
             android:textSize="24sp"
             android:textStyle="bold"
+            android:textColor="@color/text_primary_dark"
             android:gravity="center"
-            android:layout_marginBottom="16dp"/>
+            android:layout_marginBottom="24dp"/>
 
-        <!-- Grades will be added programmatically here -->
+
+
 
     </LinearLayout>
 </ScrollView>

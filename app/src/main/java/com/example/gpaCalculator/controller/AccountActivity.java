@@ -134,5 +134,11 @@ public class AccountActivity extends AppCompatActivity {
             Intent intent = new Intent(AccountActivity.this, HomeActivity.class);
             startActivity(intent);
         });
+
+        Button btnSignOut = findViewById(R.id.btnSignOut);
+        btnSignOut.setOnClickListener(v -> {
+            Intent intent = new Intent(AccountActivity.this, LoginActivity.class);
+            startActivity(intent);
+        });
     }
 }
